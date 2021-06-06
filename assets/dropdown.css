@@ -1,0 +1,21 @@
+.dropbtn {
+    background-color: #06619e;
+    color: rgb(0, 0, 0);
+    padding: 16px;
+    font-size: 13px;
+    font-weight:bold;
+    border: none;
+    cursor: pointer;
+    position:relative;
+  }
+
+
+  .dropbtn-content{
+    display:block;
+    position: relative;
+    background-color: #741111;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
