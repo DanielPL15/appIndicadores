@@ -31,9 +31,6 @@ import glob
 import ntpath
 import random
 import dash_table
-import matlab.engine
-eng = matlab.engine.start_matlab()
-ret = eng.triarea(1.0,5.0)
 
 df = pd.read_excel("indicators/ODS2020.xlsx", engine='openpyxl')
 
@@ -586,6 +583,7 @@ def update_list_cluster(bt1,bt2,file_chosen,sheet_chosen,indicator_chosen, listC
         if button_id == 'clear_variable_list':
             return [[]]
         listChildren.append(dbc.ListGroupItem(indicator_chosen))
+        #write_excel(pd.DataFrame([file_chosen,sheet_chosen,indicator_chosen]),file2,"Cluster_var",)
         df_for_list_cluster_variable = df_for_list_cluster_variable.append([file_chosen,sheet_chosen,indicator_chosen])
 
     
