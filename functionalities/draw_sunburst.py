@@ -39,4 +39,6 @@ def draw_sunburst(df9,df10,df11):
       paper_bgcolor='rgba(0,0,0,0)',
       font_color="#70BFFA"
     )
+
+
     fig.write_html('sunburst.html', auto_open=True)
