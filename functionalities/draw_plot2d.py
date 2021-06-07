@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 def plot_2d(dd1,dd2,dd3,dd4,dd5,dd6):
-    file2='filtros.xlsx'
+    file2='static/filtros.xlsx'
     # Dataframe with name and values of indicators
     df = pd.DataFrame()
     df["country"] = read_indicator(dd1,dd2,"Pais")

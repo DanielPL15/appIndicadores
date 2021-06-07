@@ -10,6 +10,7 @@ import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 
+
 def draw_sunburst(df9,df10,df11):
 
  
@@ -40,5 +41,4 @@ def draw_sunburst(df9,df10,df11):
       font_color="#70BFFA"
     )
 
-
-    fig.write_html('sunburst.html', auto_open=True)
+    fig.write_html('static/sunburst.html', auto_open=True)

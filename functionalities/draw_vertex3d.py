@@ -18,7 +18,7 @@ from plotly.graph_objs import *
 
 def draw_vertex3d():
 
-    file2='filtros.xlsx'
+    file2='static/filtros.xlsx'
     
     #Read excel
     df3 = pd.read_excel(file2, sheet_name='Hoja1')

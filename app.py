@@ -31,10 +31,13 @@ import glob
 import ntpath
 import random
 import dash_table
+from whitenoise import WhiteNoise
+
+
 
 df = pd.read_excel("indicators/ODS2020.xlsx", engine='openpyxl')
 
-file2='filtros.xlsx'
+file2='static/filtros.xlsx'
 df1 = pd.read_excel(file2, sheet_name='Hoja1', engine='openpyxl')
 df2 = pd.read_excel(file2, sheet_name='Cluster', engine='openpyxl')
 df3 = pd.read_excel(file2, sheet_name='Parallel', engine='openpyxl')
@@ -86,7 +89,10 @@ options_neigh_vertex = options_neigh_vertex.to_dict('records')
 # you plan to use a custom CSS or JavaScript in your Dash apps
 app = dash.Dash(__name__,  external_stylesheets=[dbc.themes.SUPERHERO], suppress_callback_exceptions=True)
 
+
 server = app.server
+
+server.wsgi_app = WhiteNoise(server.wsgi_app, root='static/')
 
 auth = dash_auth.BasicAuth(
     app,
@@ -602,7 +608,7 @@ def show_list_of_clusters(cluster_button,list_variables_cluster):
         # return dbc.Table(
         # [html.Thead(html.Tr([html.Th("Cluster 1"), html.Th("Cluster 2"), html.Th("Cluster 3"), html.Th("Cluster 4"),  html.Th("Cluster 5")]))],
         # id ='table_of_clusters'
-        dfClustersSheet = pd.read_excel('filtros.xlsx', sheet_name='Cluster', engine='openpyxl')
+        dfClustersSheet = pd.read_excel('static/filtros.xlsx', sheet_name='Cluster', engine='openpyxl')
         dfClustersSheet2 = dfClustersSheet[["country","Cluster"]]
         n=1
         df_total = pd.DataFrame()
