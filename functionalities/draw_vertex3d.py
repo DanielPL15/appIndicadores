@@ -174,6 +174,15 @@ def draw_vertex3d():
         frames.append(go.Frame(layout=dict(scene_camera_eye=dict(x=xe, y=ye, z=ze))))
     fig.frames=frames
     
-    fig.write_html('vertex3d.html', auto_open=True)
+    fig.update_layout(
+      autosize=False,
+      width=1200,
+      height=1200,
+      paper_bgcolor='rgba(0,0,0,0)',
+      font_color="#70BFFA"
+    )
+
+    return fig
+    #fig.write_html('vertex3d.html', auto_open=True)
 
 

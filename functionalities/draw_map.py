@@ -28,11 +28,14 @@ def draw_map(df10):
                         hover_name="country")
 
     fig.update_layout(
+      autosize=False,
+      width=1200,
+      height=1200,
       paper_bgcolor='rgba(0,0,0,0)',
       font_color="#70BFFA"
     )
-
-    fig.write_html('map.html', auto_open=True)
+    return fig
+    #fig.write_html('static/map.html', auto_open=True)
 
 
 

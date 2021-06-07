@@ -73,5 +73,14 @@ def plot_2d(dd1,dd2,dd3,dd4,dd5,dd6):
     fig.update(layout_coloraxis_showscale=False)
 
 
+        
+    fig.update_layout(
+      autosize=False,
+      width=1000,
+      height=600,
+      paper_bgcolor='rgba(0,0,0,0)',
+      font_color="#70BFFA"
+    )
     
-    fig.write_html('2DPlot.html', auto_open=True)
+    return fig
+    #fig.write_html('static/2DPlot.html', auto_open=True)

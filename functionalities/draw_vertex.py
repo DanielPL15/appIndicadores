@@ -105,4 +105,14 @@ def draw_vertex(df9,df,df11):
     
     data=[trace1, trace2]
     fig=ig.Figure(data=data, layout=layout)
-    fig.write_html('vertex2d.html', auto_open=True)
+
+    fig.update_layout(
+      autosize=False,
+      width=1200,
+      height=1200,
+      paper_bgcolor='rgba(0,0,0,0)',
+      font_color="#70BFFA"
+    )
+
+    return fig
+    #fig.write_html('vertex2d.html', auto_open=True)

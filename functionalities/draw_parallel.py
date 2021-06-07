@@ -49,9 +49,12 @@ def draw_parallel(df10,df11):
               sortpaths='forward',
               arrangement='freeform')])
     fig.update_layout(
+      autosize=False,
+      width=1200,
+      height=600,
       paper_bgcolor='rgba(0,0,0,0)',
       font_color="#70BFFA"
     )
+    return fig
     
-    
-    fig.write_html('parallel.html', auto_open=True)
+    #fig.write_html('static/parallel.html', auto_open=True)

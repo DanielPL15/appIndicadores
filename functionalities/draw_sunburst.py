@@ -37,8 +37,11 @@ def draw_sunburst(df9,df10,df11):
     fig = px.sunburst(df, path=['Cluster', 'country'], hover_data =values, values=titles[long_df-2])
     fig.update_layout(title_text=titles[long_df-2], title_x=0.5)
     fig.update_layout(
+      autosize=False,
+      width=700,
+      height=700,
       paper_bgcolor='rgba(0,0,0,0)',
       font_color="#70BFFA"
     )
-
-    fig.write_html('static/sunburst.html', auto_open=True)
+    return fig
+    #fig.write_html('static/sunburst.html', auto_open=True)

@@ -45,8 +45,12 @@ def draw_radar(df9,df10):
           visible=True,
           range=[0, values.max()]
         )),
+      autosize=False,
+      width=1200,
+      height=800,
       showlegend=True,
       paper_bgcolor='rgba(0,0,0,0)',
       font_color="#70BFFA"
     )
-    fig.write_html('radar.html', auto_open=True)
+    return fig
+    #fig.write_html('static/radar.html', auto_open=True)

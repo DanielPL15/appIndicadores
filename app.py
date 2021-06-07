@@ -151,7 +151,7 @@ def filter_tab():
                         width={'size': 3, 'offset': 3},
                 )                
             ],
-        align='center')
+        align='center'),
 
     ])
 # Content of Cluster Tab
@@ -234,6 +234,7 @@ def cluster_tab():
 # Content of Plot Tab
 def plot_tab():
     return html.Div([
+            html.H2('Plot a Graphic and scroll down to see it!', style={'padding':'10px','background-color':'#06619e', 'text-align':'center'}),
             dbc.Row([
                     dbc.Col([
                     html.Div(
@@ -380,11 +381,15 @@ def plot_tab():
                     style={'padding':5}),
                 ],style={'padding':5}),
         ]),
+        dbc.Row(),
+        dbc.Row(),
+        dbc.Row(),
+        dbc.Row(),
         dbc.Row(
             dbc.Col(
                 html.Div(id='container', children=[]),
-                width={'size': 4,  "offset": 6})),
-    ])
+                width={'size': 12,  "offset": 0}),style={"height": "300vh"}),
+    ], style={'padding':20, 'text-align':'center'})
 
 #---------------------------------------------------------------
 app.layout = html.Div([
@@ -647,32 +652,80 @@ def show_list_of_clusters(cluster_button,list_variables_cluster):
 def update_graph(bt1,bt2,bt3,bt4,bt5,bt6,bt7,dd1_sun,dd2_sun,dd3_sun,dd1_2d,dd2_2d,dd3_2d,dd4_2d,dd5_2d,dd6_2d):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     if 'submit_parallel' in changed_id:
-        draw_parallel(df2,df3)
-        return [html.Div(id='sth')]
+        new_child = [html.Div(
+            style={'padding': 20, 'text-align':'center', 'display': 'inline-block'},
+            children=[
+                dcc.Graph(
+                    id= 'radar',
+                    figure=draw_parallel(df2,df3)
+                    )
+                ]
+                )]
+        return new_child
     elif 'submit_radar' in changed_id:
-        figure=draw_radar(df1,df2)
-        return [html.Div(id='sth')]
+        new_child = [html.Div(
+            style={'padding': 20, 'text-align':'center', 'display': 'inline-block'},
+            children=[
+                dcc.Graph(
+                    id= 'radar',
+                    figure=draw_radar(df1,df2)
+                    )
+                ]
+                )]
+        return new_child
 
     elif 'submit_sunburst' in changed_id:
         df4 = read_indicator_sunburst(dd1_sun,dd2_sun,dd3_sun)
-        draw_sunburst(df1,df2,df4)
-        return [html.Div(id='sth')]
+        new_child = [html.Div(
+            style={'padding': 20, 'text-align':'center', 'display': 'inline-block'},
+            children=[
+                dcc.Graph(
+                    id= 'radar',
+                    figure=draw_sunburst(df1,df2,df4)
+                    )
+                ]
+                )]
+        return new_child
+        #return [html.Div(id='sth')]
 
     elif 'submit_map' in changed_id:
-        figure=draw_map(df2)
-        return [html.Div(id='sth')]
+        new_child = [html.Div(
+            style={'padding': 100, 'text-align':'center', 'display': 'inline-block'},
+            children=[
+                dcc.Graph(
+                    id= 'radar',
+                    figure=draw_map(df2)
+                    )
+                ])]
+        return new_child
         
     elif 'submit_vertex' in changed_id:
         df5 = pd.read_excel(file2, sheet_name='Vertex', engine='openpyxl')
         write_excel(df_aux,file2,'Vertex',2,1)
         draw_vertex(df1,df2,df5)
-        return [html.Div(id='sth')]
+        new_child = [html.Div(
+            style={'padding': 100, 'text-align':'center', 'display': 'inline-block'},
+            children=[
+                dcc.Graph(
+                    id= 'radar',
+                    figure=draw_vertex(df1,df2,df5)
+                    )
+                ])]
+        return new_child
 
     elif 'submit_vertex3d' in changed_id:
         msg = 'Button 3 was most recently clicked'
     elif 'submit_plot2D' in changed_id:
-         plot_2d(dd1_2d,dd2_2d,dd3_2d,dd4_2d,dd5_2d,dd6_2d)
-         return [html.Div(id='sth')]
+        new_child = [html.Div(
+            style={'padding': 100, 'text-align':'center', 'display': 'inline-block'},
+            children=[
+                dcc.Graph(
+                    id= 'radar',
+                    figure=plot_2d(dd1_2d,dd2_2d,dd3_2d,dd4_2d,dd5_2d,dd6_2d)
+                    )
+                ])]
+        return new_child
+
     return [html.Div(id='sth')]
     
 if __name__ == '__main__':
