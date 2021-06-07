@@ -6,6 +6,7 @@ Created on Tue Mar 23 17:37:44 2021
 """
 
 
+from functionalities.draw_vertex3d import draw_vertex3d
 from functionalities.draw_plot2d import plot_2d
 from others.read_indicator_sunburst import read_indicator_sunburst
 from dash_html_components.Div import Div
@@ -32,8 +33,6 @@ import ntpath
 import random
 import dash_table
 from whitenoise import WhiteNoise
-
-
 
 df = pd.read_excel("indicators/ODS2020.xlsx", engine='openpyxl')
 
@@ -164,7 +163,7 @@ def cluster_tab():
                     id='dropdown_file_cluster',
                     options=df_file_list_dict,
                     className="dropbtn",
-                    value='indicators\ODS2020.xlsx',
+                    value= df_file_list.at[1,'value'],
                     placeholder='Select a group of indicators',
                     clearable=False,
                 ),
@@ -246,7 +245,7 @@ def plot_tab():
                                         id='dropdown_file_x',
                                         options=df_file_list_dict,
                                         className="dropbtn",
-                                        value='indicators\ODS2020.xlsx',
+                                        value= df_file_list.at[1,'value'],
                                         placeholder='Select a group of indicators',
                                         clearable=False,
                                     ),
@@ -274,7 +273,7 @@ def plot_tab():
                                         id='dropdown_file_y',
                                         options=df_file_list_dict,
                                         className="dropbtn",
-                                        value='indicators\ODS2020.xlsx',
+                                        value= df_file_list.at[1,'value'],
                                         placeholder='Select a group of indicators',
                                         clearable=False,
                                     ),
@@ -310,15 +309,15 @@ def plot_tab():
                             id='method_vertex',
                             options=options_method_vertex,
                             className="dropbtn",
-                            value='Hoja1',
+                            value='auto',
                             placeholder='Select a method',
                             clearable=False,
                         ),
                         dcc.Dropdown(
-                            id='dropdown_indicator_cluster',
+                            id='dropdown_neighbors_vertex',
                             options=options_neigh_vertex,
                             className="dropbtn",
-                            value='2020 Global Index Score (0-100)',
+                            value='1',
                             placeholder='Select Number of Neighbors',
                             clearable=False,
                         ),
@@ -339,7 +338,7 @@ def plot_tab():
                                 id='dropdown_file_sunburst',
                                 options=df_file_list_dict,
                                 className="dropbtn",
-                                value='indicators\ODS2020.xlsx',
+                                value= df_file_list.at[1,'value'],
                                 placeholder='Select a group of indicators',
                                 clearable=False,
                             ),
@@ -645,11 +644,13 @@ def show_list_of_clusters(cluster_button,list_variables_cluster):
     State(component_id='dropdown_indicator_x', component_property='value'),
     State(component_id='dropdown_file_y', component_property='value'),
     State(component_id='dropdown_sheet_y', component_property='value'),
-    State(component_id='dropdown_indicator_y', component_property='value')
+    State(component_id='dropdown_indicator_y', component_property='value'),
+    State(component_id='method_vertex', component_property='value'),
+    State(component_id='dropdown_neighbors_vertex', component_property='value'),
     ]
     )
 
-def update_graph(bt1,bt2,bt3,bt4,bt5,bt6,bt7,dd1_sun,dd2_sun,dd3_sun,dd1_2d,dd2_2d,dd3_2d,dd4_2d,dd5_2d,dd6_2d):
+def update_graph(bt1,bt2,bt3,bt4,bt5,bt6,bt7,dd1_sun,dd2_sun,dd3_sun,dd1_2d,dd2_2d,dd3_2d,dd4_2d,dd5_2d,dd6_2d,method_vertex,neigh_vertex):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     if 'submit_parallel' in changed_id:
         new_child = [html.Div(
@@ -699,22 +700,31 @@ def update_graph(bt1,bt2,bt3,bt4,bt5,bt6,bt7,dd1_sun,dd2_sun,dd3_sun,dd1_2d,dd2_
                 ])]
         return new_child
         
-    elif 'submit_vertex' in changed_id:
-        df5 = pd.read_excel(file2, sheet_name='Vertex', engine='openpyxl')
-        write_excel(df_aux,file2,'Vertex',2,1)
-        draw_vertex(df1,df2,df5)
+    elif ('submit_vertex' in changed_id) &  (('submit_vertex3d' in changed_id)==False):
+        #df5 = pd.read_excel(file2, sheet_name='Vertex', engine='openpyxl')
+        #write_excel([df_aux],file2,'Vertex',2,1)
+        df5 = pd.DataFrame([[method_vertex,neigh_vertex]], columns=list('AB'))
         new_child = [html.Div(
             style={'padding': 100, 'text-align':'center', 'display': 'inline-block'},
             children=[
                 dcc.Graph(
-                    id= 'radar',
+                    id= 'vertex',
                     figure=draw_vertex(df1,df2,df5)
                     )
                 ])]
         return new_child
 
-    elif 'submit_vertex3d' in changed_id:
-        msg = 'Button 3 was most recently clicked'
+    elif ('submit_vertex3d' in changed_id):
+        df5 = pd.DataFrame([[method_vertex,neigh_vertex]], columns=list('AB'))
+        new_child = [html.Div(
+            style={'padding': 100, 'text-align':'center', 'display': 'inline-block'},
+            children=[
+                dcc.Graph(
+                    id= 'vertex3d',
+                    figure=draw_vertex3d(df1,df2,df5)
+                    )
+                ])]
+        return new_child
     elif 'submit_plot2D' in changed_id:
         new_child = [html.Div(
             style={'padding': 100, 'text-align':'center', 'display': 'inline-block'},

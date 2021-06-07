@@ -7,10 +7,10 @@ Created on Thu Jul 16 12:27:36 2020
 
 from sklearn.neighbors import NearestNeighbors
 import pandas as pd
-import jgraph as ig
-from jgraph import *
+import igraph as ig
+from igraph import *
+# import jgrapht as jgrapht
 from plotly.graph_objs import *
-
 
 #X = np.array([[-1, -1,3], [-2, -1,4], [-3, -2,5], [1, 1,6], [2, 1,7], [3, 2,8]])
 
@@ -34,11 +34,13 @@ def draw_vertex(df9,df,df11):
     
     
     data = df11.rename_axis('ID').values
-    nbrs = NearestNeighbors(n_neighbors=data[0,1], algorithm=data[0,0]).fit(values_array)
+    nbrs = NearestNeighbors(n_neighbors=int(data[0,1]), algorithm=data[0,0]).fit(values_array)
     distances, indices = nbrs.kneighbors(values_array)
     A=nbrs.kneighbors_graph(values_array).toarray()
     
-    G = ig.Graph()
+    #G =  Graph()
+
+    G = Graph()
     
     G.add_vertices(num)
     
@@ -66,13 +68,13 @@ def draw_vertex(df9,df,df11):
         Xe+=[layt[e[0]][0],layt[e[1]][0], None]
         Ye+=[layt[e[0]][1],layt[e[1]][1], None]
     
-    trace1=ig.Scatter(x=Xe,
+    trace1=Scatter(x=Xe,
                    y=Ye,
                    mode='lines',
                    line= dict(color='rgb(180,180,180)', width=1),
                    hoverinfo='none'
                    )
-    trace2=ig.Scatter(x=Xn,
+    trace2=Scatter(x=Xn,
                    y=Yn,
                    mode='markers',
                    name='ntw',
@@ -93,7 +95,7 @@ def draw_vertex(df9,df,df11):
               title=''
               )
     
-    layout=ig.Layout(
+    layout=Layout(
         showlegend=False,
         autosize=True,
         xaxis= {'visible':False},
@@ -104,12 +106,12 @@ def draw_vertex(df9,df,df11):
         )
     
     data=[trace1, trace2]
-    fig=ig.Figure(data=data, layout=layout)
+    fig=Figure(data=data, layout=layout)
 
     fig.update_layout(
       autosize=False,
-      width=1200,
-      height=1200,
+      width=700,
+      height=700,
       paper_bgcolor='rgba(0,0,0,0)',
       font_color="#70BFFA"
     )

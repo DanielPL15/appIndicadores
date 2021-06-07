@@ -16,22 +16,8 @@ from plotly.graph_objs import *
 
 #X = np.array([[-1, -1,3], [-2, -1,4], [-3, -2,5], [1, 1,6], [2, 1,7], [3, 2,8]])
 
-def draw_vertex3d():
+def draw_vertex3d(df9,df,df11):
 
-    file2='static/filtros.xlsx'
-    
-    #Read excel
-    df3 = pd.read_excel(file2, sheet_name='Hoja1')
-    df2 = pd.read_excel(file2, sheet_name='Cluster')
-    df4 = pd.read_excel(file2, sheet_name='Vertex')
-    
-    #Create dataframes
-    df9  = pd.DataFrame(df3)  #Dataframe for country names
-    df = pd.DataFrame(df2)  #Dataframe for indicator values
-    df11 = pd.DataFrame(df4)  #Dataframe for method and neighbors
-    #df10 = df10.loc[:, ~df10.columns.str.contains('^Unnamed')]
-    
-    #df = pd.concat([df10, df11.reindex(df10.index)], axis=1)
     
     #Variable for quantification
     data_top = df.head(1)
@@ -51,7 +37,7 @@ def draw_vertex3d():
     
     
     data = df11.rename_axis('ID').values
-    nbrs = NearestNeighbors(n_neighbors=data[0,1], algorithm=data[0,0]).fit(values_array)
+    nbrs = NearestNeighbors(n_neighbors=int(data[0,1]), algorithm=data[0,0]).fit(values_array)
     distances, indices = nbrs.kneighbors(values_array)
     A=nbrs.kneighbors_graph(values_array).toarray()
     
@@ -176,8 +162,8 @@ def draw_vertex3d():
     
     fig.update_layout(
       autosize=False,
-      width=1200,
-      height=1200,
+      width=900,
+      height=900,
       paper_bgcolor='rgba(0,0,0,0)',
       font_color="#70BFFA"
     )
