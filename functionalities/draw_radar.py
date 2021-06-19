@@ -13,13 +13,21 @@ def draw_radar(df9,df10):
     
     #Keep names
     names=list(df10.country)
-    nn=len(names)
-    
-    
+
+
+      
     #Keep titles
     data_top = df10.head(1)
     var=data_top.iloc[1:1, 4:30].columns
     categories=list(var)
+
+    nn=0
+    for i in range(0,len(categories)):
+      if 'Unnamed' in categories[i]:
+        break
+      nn=nn+1
+    
+    categories = categories[0:nn]
     
     #Keep values
     values = df10[categories]
@@ -30,12 +38,12 @@ def draw_radar(df9,df10):
     
     
     # Create dimensions                      
-    for i in range(nn):
+    for i in range(len(names)):
         fig.add_trace(go.Scatterpolar(
             r= values.loc[i],
             theta=categories,
             fill='none',
-            name=names[i]
+            name=names[i],
         ))
     
     
@@ -45,6 +53,7 @@ def draw_radar(df9,df10):
           visible=True,
           range=[0, values.max()]
         )),
+      polar_bgcolor='rgba(99,143,156,0.5)',
       autosize=False,
       width=1200,
       height=800,

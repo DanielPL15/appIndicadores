@@ -33,7 +33,16 @@ def draw_vertex3d(df9,df,df11):
      
     values_df = df[titles[4:long_df]]
     values_array= values_df.rename_axis('ID').values
+
+    values_array = values_array[:, ~np.isnan(values_array).all(axis=0)]
     num=len(values_array)
+
+    # num=0
+    # for i in range(0,len(values_array)):
+    #   if 'Unnamed' in values_array[i]:
+    #     break
+    #   num=num+1
+    # values_array = values_array[0:num]
     
     
     data = df11.rename_axis('ID').values

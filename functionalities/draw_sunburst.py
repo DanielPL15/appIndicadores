@@ -22,7 +22,23 @@ def draw_sunburst(df9,df10,df11):
     #Variable for quantification
     data_top = df.head(1)
     var=data_top.iloc[1:1, 0:50].columns
-    titles=list(var)
+    titles=list(var)      
+
+    nn=0
+    for i in range(0,len(titles)):
+      if 'Unnamed' in titles[i]:
+        break
+      nn=nn+1
+
+    titles = titles[0:nn] + titles[(len(titles)-2):(len(titles))]
+
+    nn2=0
+    for i in range(0,len(titles)):
+      if 'Unnamed' in titles[i]:
+        break
+      nn2=nn2+1
+    titles = titles[0:nn2]
+
     long_df=len(titles)
     
     
@@ -32,6 +48,7 @@ def draw_sunburst(df9,df10,df11):
     df = df.reset_index(drop=True)
      
     values = df[titles[4:(long_df-2)]]
+
     
     #Create figure 
     fig = px.sunburst(df, path=['Cluster', 'country'], hover_data =values, values=titles[long_df-2])

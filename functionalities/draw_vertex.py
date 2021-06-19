@@ -11,6 +11,7 @@ import igraph as ig
 from igraph import *
 # import jgrapht as jgrapht
 from plotly.graph_objs import *
+import numpy as np
 
 #X = np.array([[-1, -1,3], [-2, -1,4], [-3, -2,5], [1, 1,6], [2, 1,7], [3, 2,8]])
 
@@ -30,7 +31,17 @@ def draw_vertex(df9,df,df11):
      
     values_df = df[titles[4:long_df]]
     values_array= values_df.rename_axis('ID').values
+
+    values_array = values_array[:, ~np.isnan(values_array).all(axis=0)]
     num=len(values_array)
+
+
+    # num=0
+    # for i in range(0,num_cols):
+    #   if 'Unnamed' in values_array[i]:
+    #     break
+    #   num=num+1
+    # values_array = values_array[:, [0,num]]
     
     
     data = df11.rename_axis('ID').values
@@ -84,7 +95,9 @@ def draw_vertex(df9,df,df11):
                                             line=dict(color='rgb(50,50,50)', width=0.5)
                                             ),
                    text=labels,
-                   hoverinfo='text'
+                   visible=True,
+                   hoverinfo='text',
+                   hovertext=labels
                    )
     
     axis=dict(showline=False, # hide axis line, grid, ticklabels and  title

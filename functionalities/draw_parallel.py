@@ -11,19 +11,25 @@ import pandas as pd
 import numpy as np
 
 
-def draw_parallel(df10,df11):
+def draw_parallel(df1,df10,df11):
 
     
     # Remove rows with a nan
+    df10 = df10[df1.Considerar_pais != 0]
     df10 = df10[np.logical_not(np.isnan(df10.Cluster))]
     df10 = df10.reset_index(drop=True)
+    df11 = df11[df1.Considerar_pais != 0]
     df11 = df11[np.logical_not(np.isnan(df11.Cluster))]
     df11 = df11.reset_index(drop=True)
     
     data_top = df10.head(1)
     var=data_top.iloc[1:1, 4:30].columns
     var2=list(var)
-    nn=len(var2)
+    nn=0
+    for i in range(0,len(var2)):
+      if 'Unnamed' in var2[i]:
+        break
+      nn=nn+1
     
     # Create dimensions
     dim_var =[]                           
@@ -35,7 +41,7 @@ def draw_parallel(df10,df11):
                                    categoryorder='array'))
                                  
     # # Create parcats trace
-    color = df10.Cluster;
+    color = df10.Cluster
     # colorscale = [[0, 'lightsteelblue'], [1, 'mediumseagreen']];
     # colorscale= ['lightgrey','yellow','red',
     #             'blue','lightgreen',

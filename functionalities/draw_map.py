@@ -11,16 +11,16 @@ import pandas as pd
 import os
     
 
-def draw_map(df10):
+def draw_map(df1,df10):
     # file2='C:\\Users\\José Félix\\Documents\\Test_gui_Matlab\\cluster_5_6_2020\\filtros.xlsx'
     # print(os.getcwd())
-    
+    df10 = df10[df1.Considerar_pais != 0]
     data_top = df10.head(1) #Extrae las cabeceras del dataframe
     var=data_top.iloc[1:1, 4:30].columns #Selecciona una parte del dataframe
     #el colum extrae nombres de columnas
     
     fig = px.choropleth(df10, locations="iso_alpha", 
-                        color="Cluster_name", 
+                        color="Cluster", 
                         hover_data=var,
                         color_discrete_sequence= ['lightgrey','yellow','red',
                                                   'blue','lightgreen',
@@ -31,6 +31,7 @@ def draw_map(df10):
       autosize=False,
       width=1200,
       height=1200,
+      coloraxis_showscale=False,
       paper_bgcolor='rgba(0,0,0,0)',
       font_color="#70BFFA"
     )

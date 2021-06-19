@@ -65,7 +65,7 @@ def plot_2d(dd1,dd2,dd3,dd4,dd5,dd6):
     
     #fig.data[0].name = 'observations'
 
-    #fig = exponential_fit(fig, df["(x) "+dd3], df["(y) "+dd6])
+    fig = exponential_fit(fig, df["(x) "+dd3], df["(y) "+dd6])
 
     fig.data[0].showlegend = False
     fig.data[1].name = fig.data[1].name  + "Linear  R^2 = "+ str(round(r_squared,3)) + " Slope = "+ str(round(slope[1],3))
@@ -78,8 +78,10 @@ def plot_2d(dd1,dd2,dd3,dd4,dd5,dd6):
       autosize=False,
       width=1000,
       height=600,
-      paper_bgcolor='rgba(0,0,0,0)',
-      font_color="#70BFFA"
+      paper_bgcolor='rgba(99,143,156,0)',
+      plot_bgcolor='rgba(99,143,156,0.5)',
+      font_color="#70BFFA",
+      font_size = 15
     )
     
     return fig
