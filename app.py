@@ -284,14 +284,17 @@ def cluster_tab():
                         style={'padding':5,'width': '33%', 'display': 'inline-block'}
                     )],
                 style={'padding':20}),
-                dcc.Dropdown(
-                            id='dropdown_number_clusters',
-                            options=options_neigh_vertex,
-                            className="dropbtn",
-                            value = '1',
-                            placeholder='Select Number of Clusters',
-                            clearable=False,
-                        ),
+                html.Div([
+                    html.H5('Number of Clusters', style={'padding':'10px','background-color':'#06619e'}),
+                    dcc.Dropdown(
+                                id='dropdown_number_clusters',
+                                options=options_neigh_vertex,
+                                className="dropbtn",
+                                value = '3',
+                                placeholder='Select Number of Clusters',
+                                clearable=False,
+                            ),
+                    ]),
                 ],
                 width={'size': 4, 'offset': 0}),
             dbc.Col([
