@@ -70,6 +70,8 @@ for i in file_list_path:
     file_list.append(ntpath.basename(i))
     n=n+1
 
+
+
 # Default values for dropdows
 df_file_list = pd.DataFrame({'label':file_list,'value':file_list_path})
 df_file_list_dict = df_file_list.to_dict('records')
