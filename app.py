@@ -81,11 +81,11 @@ df_list_groups_of_countries_2col = pd.DataFrame({'label':var,'value':var})
 df_list_groups_of_countries_dict = df_list_groups_of_countries_2col.to_dict('records')
 
 
-book = openpyxl.load_workbook("indicators\IDIyGCI.xlsx")
+book = openpyxl.load_workbook("indicators/ODSy3i.xlsx")
 default_sheets = book.sheetnames
 df_default_sheets = pd.DataFrame({'label':default_sheets,'value':default_sheets})
 df_default_sheets_dict = df_default_sheets.to_dict('records')
-df_aux = pd.read_excel("indicators/IDIyGCI.xlsx", sheet_name='IDI', engine='openpyxl')
+df_aux = pd.read_excel("indicators/ODSy3i.xlsx", sheet_name='ODS', engine='openpyxl')
 default_indicators = list(df_aux.columns)[2:]
 df_default_indicators = pd.DataFrame({'label':default_indicators,'value':default_indicators})
 df_default_indicators_dict = df_default_indicators.to_dict('records')
@@ -246,7 +246,7 @@ def cluster_tab():
                     id='dropdown_file_cluster',
                     options=df_file_list_dict,
                     className="dropbtn",
-                    value= "indicators\IDIyGCI.xlsx",
+                    value= "indicators\ODSy3i.xlsx",
                     placeholder='Select a group of indicators',
                     clearable=False,
                 ),
@@ -254,7 +254,7 @@ def cluster_tab():
                     id='dropdown_sheet_cluster',
                     options=df_default_sheets_dict,
                     className="dropbtn",
-                    value='IDI',
+                    value='ODS',
                     placeholder='Select a subgroup of indicators',
                     clearable=False,
                 ),
@@ -262,7 +262,7 @@ def cluster_tab():
                     id='dropdown_indicator_cluster',
                     options=df_default_indicators_dict,
                     className="dropbtn",
-                    value='OVERALL',
+                    value='2020 Global Index Score (0-100)',
                     placeholder='Select an indicator',
                     clearable=False,
                 ),
@@ -339,7 +339,7 @@ def plot_tab():
                                         id='dropdown_file_x',
                                         options=df_file_list_dict,
                                         className="dropbtn",
-                                        value= "indicators\IDIyGCI.xlsx",
+                                        value= "indicators\ODSy3i.xlsx",
                                         placeholder='Select a group of indicators',
                                         clearable=False,
                                     ),
@@ -347,7 +347,7 @@ def plot_tab():
                                         id='dropdown_sheet_x',
                                         options=df_default_sheets_dict,
                                         className="dropbtn",
-                                        value='IDI',
+                                        value='ODS',
                                         placeholder='Select a subgroup of indicators',
                                         clearable=False,
                                     ),
@@ -355,7 +355,7 @@ def plot_tab():
                                         id='dropdown_indicator_x',
                                         options=df_default_indicators_dict,
                                         className="dropbtn",
-                                        value='OVERALL',
+                                        value='2020 Global Index Score (0-100)',
                                         placeholder='Select an indicator',
                                         clearable=False,
                                     ),
@@ -367,7 +367,7 @@ def plot_tab():
                                         id='dropdown_file_y',
                                         options=df_file_list_dict,
                                         className="dropbtn",
-                                        value= "indicators\IDIyGCI.xlsx",
+                                        value= "indicators\ODSy3i.xlsx",
                                         placeholder='Select a group of indicators',
                                         clearable=False,
                                     ),
@@ -375,7 +375,7 @@ def plot_tab():
                                         id='dropdown_sheet_y',
                                         options=df_default_sheets_dict,
                                         className="dropbtn",
-                                        value='IDI',
+                                        value='ODS',
                                         placeholder='Select a subgroup of indicators',
                                         clearable=False,
                                     ),
@@ -383,7 +383,7 @@ def plot_tab():
                                         id='dropdown_indicator_y',
                                         options=df_default_indicators_dict,
                                         className="dropbtn",
-                                        value='OVERALL',
+                                        value='2020 Global Index Score (0-100)',
                                         placeholder='Select an indicator',
                                         clearable=False,
                                     ),
@@ -444,7 +444,7 @@ def plot_tab():
                                 id='dropdown_file_sunburst',
                                 options=df_file_list_dict,
                                 className="dropbtn",
-                                value= "indicators\IDIyGCI.xlsx",
+                                value= "indicators\ODSy3i.xlsx",
                                 placeholder='Select a group of indicators',
                                 clearable=False,
                             ),
@@ -452,7 +452,7 @@ def plot_tab():
                                 id='dropdown_sheet_sunburst',
                                 options=df_default_sheets_dict,
                                 className="dropbtn",
-                                value='IDI',
+                                value='ODS',
                                 placeholder='Select a subgroup of indicators',
                                 clearable=False,
                             ),
@@ -460,7 +460,7 @@ def plot_tab():
                                 id='dropdown_indicator_sunburst',
                                 options=df_default_indicators_dict,
                                 className="dropbtn",
-                                value='OVERALL',
+                                value='2020 Global Index Score (0-100)',
                                 placeholder='Select an indicator',
                                 clearable=False,
                             ),
@@ -696,7 +696,7 @@ def update_dd1(dd1,dd2,dd3):
         value_indicators = a[0]
         write_excel(pd.DataFrame([dd1,dd2,value_indicators]),file2,"ClusterDropdown",1,0)
         return dd3, dd2, df_indicators_dict, value_indicators
-    return df_default_sheets_dict,"IDI",df_default_indicators_dict,'OVERALL'
+    return df_default_sheets_dict,"ODS",df_default_indicators_dict,'2020 Global Index Score (0-100)'
 
 
 # Callbacks for the Dropdowns in the Plot tab
@@ -734,7 +734,7 @@ def update_dd1(dd1,dd2,dd3):
         value_indicators = a[0]
         return dd3, dd2, df_indicators_dict, value_indicators
     
-    return df_default_sheets_dict,"IDI",df_default_indicators_dict,'OVERALL'
+    return df_default_sheets_dict,"ODS",df_default_indicators_dict,'2020 Global Index Score (0-100)'
 
 # Plot 2D: y axis
 # When you choose a different file or sheet you want to see the corresponding new sheets and indicators
@@ -769,7 +769,7 @@ def update_dd1(dd1,dd2,dd3):
         value_indicators = a[0]
         return dd3, dd2, df_indicators_dict, value_indicators
     
-    return df_default_sheets_dict,"IDI",df_default_indicators_dict,'OVERALL'
+    return df_default_sheets_dict,"ODS",df_default_indicators_dict,'2020 Global Index Score (0-100)'
 
 # Sunburst
 # When you choose a different file or sheet you want to see the corresponding new sheets and indicators
@@ -804,7 +804,7 @@ def update_dd1(dd1,dd2,dd3):
         value_indicators = a[0]
         return dd3, dd2, df_indicators_dict, value_indicators
     
-    return df_default_sheets_dict,"IDI",df_default_indicators_dict,'OVERALL'
+    return df_default_sheets_dict,"ODS",df_default_indicators_dict,'2020 Global Index Score (0-100)'
 
 # # Add a variable to the cluster list
 
