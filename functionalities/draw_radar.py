@@ -50,6 +50,8 @@ def draw_radar(df9,df10, white_back2):
 
 
 
+
+
     if white_back2:
       fig.update_layout(
         polar=dict(
