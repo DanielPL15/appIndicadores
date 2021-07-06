@@ -40,7 +40,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 from others.deleteColumns import *
 
-df = pd.read_excel("indicators/ODSy3i.xlsx", engine='openpyxl')
+#df = pd.read_excel("indicators/ODSy3i.xlsx", engine='openpyxl')
 
 file2='static/filtros.xlsx'
 df1 = pd.read_excel(file2, sheet_name='Hoja1', engine='openpyxl')
