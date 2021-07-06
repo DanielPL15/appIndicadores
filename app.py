@@ -26,7 +26,6 @@ from functionalities.draw_map import draw_map
 from functionalities.draw_vertex import draw_vertex
 # from functionalities.draw_vertex import draw_vertex
 import dash_auth
-import xlrd
 import openpyxl
 from others.write_excel import *
 from others.write_excel2 import *
@@ -86,7 +85,7 @@ book = openpyxl.load_workbook("indicators\ODSy3i.xlsx")
 default_sheets = book.sheetnames
 df_default_sheets = pd.DataFrame({'label':default_sheets,'value':default_sheets})
 df_default_sheets_dict = df_default_sheets.to_dict('records')
-df_aux = pd.read_excel("indicators\ODSy3i.xlsx", sheet_name='ODS', engine='openpyxl')
+df_aux = pd.read_excel("indicators/ODSy3i.xlsx", sheet_name='ODS', engine='openpyxl')
 default_indicators = list(df_aux.columns)[2:]
 df_default_indicators = pd.DataFrame({'label':default_indicators,'value':default_indicators})
 df_default_indicators_dict = df_default_indicators.to_dict('records')
