@@ -33,7 +33,6 @@ from others.write_excel2 import *
 from others.deleteSheet import *
 import glob
 import ntpath
-import random
 import dash_table
 from whitenoise import WhiteNoise
 import numpy as np
