@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
-def draw_radar(df9,df10):
+def draw_radar(df9,df10, white_back2):
 
 
 
@@ -47,19 +47,36 @@ def draw_radar(df9,df10):
         ))
     
     
-    fig.update_layout(
-      polar=dict(
-          radialaxis=dict(
-          visible=True,
-          range=[0, values.max()]
-        )),
-      polar_bgcolor='rgba(99,143,156,0.5)',
-      autosize=False,
-      width=1200,
-      height=800,
-      showlegend=True,
-      paper_bgcolor='rgba(0,0,0,0)',
-      font_color="#70BFFA"
-    )
+
+    if white_back2:
+      fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+            visible=True,
+            range=[0, values.max()]
+          )),
+        #polar_bgcolor='rgba(255,255,255,0.5)',
+        autosize=False,
+        width=1200,
+        height=800,
+        showlegend=True,
+        paper_bgcolor='rgba(0,0,0,0)',
+        font_color="#000000"
+      )
+    else:
+      fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+            visible=True,
+            range=[0, values.max()]
+          )),
+        polar_bgcolor='rgba(99,143,156,0.5)',
+        autosize=False,
+        width=1200,
+        height=800,
+        showlegend=True,
+        paper_bgcolor='rgba(0,0,0,0)',
+        font_color="#70BFFA"
+      )
     return fig
     #fig.write_html('static/radar.html', auto_open=True)

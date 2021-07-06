@@ -40,7 +40,7 @@ import numpy as np
 from sklearn.cluster import KMeans
 from others.deleteColumns import *
 
-df = pd.read_excel("indicators/ODS2020.xlsx", engine='openpyxl')
+df = pd.read_excel("indicators/ODSy3i.xlsx", engine='openpyxl')
 
 file2='static/filtros.xlsx'
 df1 = pd.read_excel(file2, sheet_name='Hoja1', engine='openpyxl')
@@ -52,6 +52,15 @@ df_list_groups_of_countries = pd.read_excel('static/Grupos_paises.xlsx',sheet_na
 df6 = df_list_groups_of_countries[['ISO_NUESTRO','country']]
 df6.rename(columns={'ISO_NUESTRO' : 'value', 'country' : 'label'}, inplace = True)
 df6_dict = df6.to_dict('records')
+
+
+df_types_regressions=[{'label':'linear','value':'linear'},
+                      {'label':'exponential','value':'exponential'},
+                      {'label':'poly2','value':'poly2'},
+                      {'label':'poly3','value':'poly3'},
+                      {'label':'logarithmic','value':'logarithmic'},
+                      {'label':'logistic','value':'logistic'},
+                      {'label':'all','value':'all'}]
 
 # Names of the excel files
 file_list_path = glob.glob("indicators/*.xlsx")
@@ -72,14 +81,16 @@ df_list_groups_of_countries_2col = pd.DataFrame({'label':var,'value':var})
 df_list_groups_of_countries_dict = df_list_groups_of_countries_2col.to_dict('records')
 
 
-book = openpyxl.load_workbook('indicators/ODS2020.xlsx')
+book = openpyxl.load_workbook('indicators\ODSy3i.xlsx')
 default_sheets = book.sheetnames
 df_default_sheets = pd.DataFrame({'label':default_sheets,'value':default_sheets})
 df_default_sheets_dict = df_default_sheets.to_dict('records')
-df_aux = pd.read_excel("indicators/ODS2020.xlsx", sheet_name='Hoja1', engine='openpyxl')
+df_aux = pd.read_excel("indicators\ODSy3i.xlsx", sheet_name='ODS', engine='openpyxl')
 default_indicators = list(df_aux.columns)[2:]
 df_default_indicators = pd.DataFrame({'label':default_indicators,'value':default_indicators})
 df_default_indicators_dict = df_default_indicators.to_dict('records')
+
+df_table_clusters=pd.DataFrame()
 
 
 # DataFrame with file, sheet and indicator of cluster variables
@@ -235,7 +246,7 @@ def cluster_tab():
                     id='dropdown_file_cluster',
                     options=df_file_list_dict,
                     className="dropbtn",
-                    value= df_file_list.at[1,'value'],
+                    value= "indicators\ODSy3i.xlsx",
                     placeholder='Select a group of indicators',
                     clearable=False,
                 ),
@@ -243,7 +254,7 @@ def cluster_tab():
                     id='dropdown_sheet_cluster',
                     options=df_default_sheets_dict,
                     className="dropbtn",
-                    value='Hoja1',
+                    value='ODS',
                     placeholder='Select a subgroup of indicators',
                     clearable=False,
                 ),
@@ -328,7 +339,7 @@ def plot_tab():
                                         id='dropdown_file_x',
                                         options=df_file_list_dict,
                                         className="dropbtn",
-                                        value= df_file_list.at[1,'value'],
+                                        value= "indicators\ODSy3i.xlsx",
                                         placeholder='Select a group of indicators',
                                         clearable=False,
                                     ),
@@ -336,7 +347,7 @@ def plot_tab():
                                         id='dropdown_sheet_x',
                                         options=df_default_sheets_dict,
                                         className="dropbtn",
-                                        value='Hoja1',
+                                        value='ODS',
                                         placeholder='Select a subgroup of indicators',
                                         clearable=False,
                                     ),
@@ -356,7 +367,7 @@ def plot_tab():
                                         id='dropdown_file_y',
                                         options=df_file_list_dict,
                                         className="dropbtn",
-                                        value= df_file_list.at[1,'value'],
+                                        value= "indicators\ODSy3i.xlsx",
                                         placeholder='Select a group of indicators',
                                         clearable=False,
                                     ),
@@ -364,7 +375,7 @@ def plot_tab():
                                         id='dropdown_sheet_y',
                                         options=df_default_sheets_dict,
                                         className="dropbtn",
-                                        value='Hoja1',
+                                        value='ODS',
                                         placeholder='Select a subgroup of indicators',
                                         clearable=False,
                                     ),
@@ -376,6 +387,18 @@ def plot_tab():
                                         placeholder='Select an indicator',
                                         clearable=False,
                                     ),
+                                    html.Div([
+                                        dbc.Checklist(id='ckl_types_correlations',
+                                                    options= df_types_regressions,
+                                                    value = "linear",
+                                                    className='container p-3 my-3 border',
+                                                    labelStyle={'display': 'block'}
+                                        ),
+                                    ]),
+                                    html.Div([
+                                        dbc.Checklist(id='white_background',
+                                                    options = [{'value':'White Background','label':'White Background'}])
+                                    ]),
                                 ],
                             style={'padding':5}),
                             html.Div(
@@ -421,7 +444,7 @@ def plot_tab():
                                 id='dropdown_file_sunburst',
                                 options=df_file_list_dict,
                                 className="dropbtn",
-                                value= df_file_list.at[1,'value'],
+                                value= "indicators\ODSy3i.xlsx",
                                 placeholder='Select a group of indicators',
                                 clearable=False,
                             ),
@@ -429,7 +452,7 @@ def plot_tab():
                                 id='dropdown_sheet_sunburst',
                                 options=df_default_sheets_dict,
                                 className="dropbtn",
-                                value='Hoja1',
+                                value='ODS',
                                 placeholder='Select a subgroup of indicators',
                                 clearable=False,
                             ),
@@ -457,9 +480,14 @@ def plot_tab():
                     dbc.Col(html.Button('Parallel', id='submit_parallel', className='btn btn-secondary', n_clicks=0),
                         width={'size': 1,  "offset": 0}),
                     style={'padding':5}),
-                    html.Div(
+                    html.Div([
                     dbc.Col(html.Button('Radar', id='submit_radar', className='btn btn-secondary', n_clicks=0),
                         width={'size': 1,  "offset": 0}),
+                    html.Div([
+                        dbc.Checklist(id='white_background2',
+                                    options = [{'value':'White Background','label':'White Background'}])
+                    ], style={'padding':5}),
+                    ],
                     style={'padding':5}),
                 ],style={'padding':5}),
         ]),
@@ -475,7 +503,7 @@ def plot_tab():
 
 #---------------------------------------------------------------
 app.layout = html.Div([
-    dbc.Row(dbc.Col(html.H1("Analysis of composite indicators"),width={'size':12,"offset":3})),
+    dbc.Row(dbc.Col(html.H1("Analysis of indicators"),width={'size':12,"offset":3})),
     html.Div([
         dbc.Tabs(id='tabs-example', active_tab='About', className="nav nav-tabs", children=[
         dbc.Tab(label='About', tab_id='About', className='nav-link active'),
@@ -533,6 +561,12 @@ def update_graph(bt1,value):
                         l_aux[i]=1 # Assign one to selected countries
         df_aux=pd.DataFrame(l_aux)
         write_excel(df_aux,file2,'Hoja1',1,2)
+        df_aux2 = pd.DataFrame(value)
+        if not df_aux2.empty:
+            df_aux2.columns = ["Last Saved Considered"]
+        deleteColums("static/Grupos_paises.xlsx",'Hoja1',34,34)
+        write_excel(pd.DataFrame(["Last Saved Considered"]),"static/Grupos_paises.xlsx",'Hoja1',0,34)
+        write_excel(df_aux2,"static/Grupos_paises.xlsx","Hoja1",1,34)
         return True
     return False
 @app.callback(
@@ -557,6 +591,12 @@ def update_graph(bt1,value):
                         l_aux[i]=1 # Assign one to selected countries
         df_aux=pd.DataFrame(l_aux)
         write_excel(df_aux,file2,'Hoja1',1,3)
+        df_aux2 = pd.DataFrame(value)
+        if not df_aux2.empty:
+            df_aux2.columns = ["Last Saved Desired"]
+        deleteColums("static/Grupos_paises.xlsx",'Hoja1',35,35)
+        write_excel(pd.DataFrame(["Last Saved Desired"]),"static/Grupos_paises.xlsx",'Hoja1',0,35)
+        write_excel(df_aux2,"static/Grupos_paises.xlsx","Hoja1",1,35)
         return True
     return False
 
@@ -577,8 +617,10 @@ def update_dd1(dd,bt1,bt2):
         return [df_list_groups_of_countries['Include All'].values.tolist()]
     if 'clear_all_considered' in changed_id:
         return [df_list_groups_of_countries['Clear All'].values.tolist()]
-    a=[df_list_groups_of_countries[dd].values.tolist()]
-    return [df_list_groups_of_countries[dd].values.tolist()]
+    if 'dropdown_groups_countries' in changed_id:
+        return [df_list_groups_of_countries[dd].values.tolist()]
+    df_aux = pd.read_excel('static/Grupos_paises.xlsx',"Hoja1",engine='openpyxl')
+    return [df_aux["Last Saved Considered"].values.tolist()]
 
 @app.callback(
     [Output(component_id='number_countries_considered', component_property='children')],
@@ -603,7 +645,10 @@ def update_dd1(dd,bt1,bt2):
         return [df_list_groups_of_countries['Include All'].values.tolist()]
     if 'clear_all_desired' in changed_id:
         return [df_list_groups_of_countries['Clear All'].values.tolist()]
-    return [df_list_groups_of_countries[dd].values.tolist()]
+    if 'dropdown_groups_countries_labels' in changed_id:
+        return [df_list_groups_of_countries[dd].values.tolist()]
+    df_aux = pd.read_excel('static/Grupos_paises.xlsx',"Hoja1",engine='openpyxl')
+    return [df_aux["Last Saved Desired"].values.tolist()]
 
 
 @app.callback(
@@ -625,21 +670,33 @@ def update_number_countries(ck1):
     Output(component_id='dropdown_indicator_cluster', component_property='options'),
     Output(component_id='dropdown_indicator_cluster', component_property='value')],
     [Input(component_id='dropdown_file_cluster', component_property='value'),
-    Input(component_id='dropdown_sheet_cluster', component_property='value')]
+    Input(component_id='dropdown_sheet_cluster', component_property='value'),
+    State(component_id='dropdown_sheet_cluster', component_property='options')]
 )
-def update_dd1(dd1,dd2):
+def update_dd1(dd1,dd2,dd3):
     # Obtain dic with sheets from current selected file and a random value to
-    wb=openpyxl.load_workbook(dd1)
-    a=wb.sheetnames
-    df_sheets_dict = pd.DataFrame({'label':a,'value':a}).to_dict('records')
-    value_sheets = random.choice(a)
+    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+    if 'dropdown_file_cluster' in changed_id:
+        wb=openpyxl.load_workbook(dd1)
+        a=wb.sheetnames
+        df_sheets_dict = pd.DataFrame({'label':a,'value':a}).to_dict('records')
+        value_sheets = a[0]
 
-    # Obtain dic with the indicators of the current selected sheet
-    df_aux = pd.read_excel(dd1, sheet_name=dd2, engine='openpyxl')
-    a=list(df_aux.columns)[2:]
-    df_indicators_dict =pd.DataFrame({'label':a,'value':a}).to_dict('records')
-    value_indicators = random.choice(a)
-    return df_sheets_dict, value_sheets, df_indicators_dict, value_indicators
+        df_aux = pd.read_excel(dd1, sheet_name=value_sheets, engine='openpyxl')
+        a=list(df_aux.columns)[2:]
+        df_indicators_dict =pd.DataFrame({'label':a,'value':a}).to_dict('records')
+        value_indicators = a[0]
+        write_excel(pd.DataFrame([dd1,value_sheets,value_indicators]),file2,"ClusterDropdown",1,0)
+        return df_sheets_dict, value_sheets, df_indicators_dict, value_indicators
+    if 'dropdown_sheet_cluster' in changed_id:
+        # Obtain dic with the indicators of the current selected sheet
+        df_aux = pd.read_excel(dd1, sheet_name=dd2, engine='openpyxl')
+        a=list(df_aux.columns)[2:]
+        df_indicators_dict =pd.DataFrame({'label':a,'value':a}).to_dict('records')
+        value_indicators = a[0]
+        write_excel(pd.DataFrame([dd1,dd2,value_indicators]),file2,"ClusterDropdown",1,0)
+        return dd3, dd2, df_indicators_dict, value_indicators
+    return df_default_sheets_dict,"ODS",df_default_indicators_dict,'2020 Global Index Score (0-100)'
 
 
 # Callbacks for the Dropdowns in the Plot tab
@@ -652,21 +709,32 @@ def update_dd1(dd1,dd2):
     Output(component_id='dropdown_indicator_x', component_property='options'),
     Output(component_id='dropdown_indicator_x', component_property='value')],
     [Input(component_id='dropdown_file_x', component_property='value'),
-    Input(component_id='dropdown_sheet_x', component_property='value')]
+    Input(component_id='dropdown_sheet_x', component_property='value'),
+    State(component_id='dropdown_sheet_x', component_property='options')]
 )
-def update_dd1(dd1,dd2):
+def update_dd1(dd1,dd2,dd3):
     # Obtain dic with sheets from current selected file and a random value to
-    wb=openpyxl.load_workbook(dd1)
-    a=wb.sheetnames
-    df_sheets_dict = pd.DataFrame({'label':a,'value':a}).to_dict('records')
-    value_sheets = random.choice(a)
+    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+    if 'dropdown_file_x' in changed_id:
+        wb=openpyxl.load_workbook(dd1)
+        a=wb.sheetnames
+        df_sheets_dict = pd.DataFrame({'label':a,'value':a}).to_dict('records')
+        value_sheets = a[0]
 
-    # Obtain dic with the indicators of the current selected sheet
-    df_aux = pd.read_excel(dd1, sheet_name=dd2, engine='openpyxl')
-    a=list(df_aux.columns)[2:]
-    df_indicators_dict =pd.DataFrame({'label':a,'value':a}).to_dict('records')
-    value_indicators = random.choice(a)
-    return df_sheets_dict, value_sheets, df_indicators_dict, value_indicators
+        df_aux = pd.read_excel(dd1, sheet_name=value_sheets, engine='openpyxl')
+        a=list(df_aux.columns)[2:]
+        df_indicators_dict =pd.DataFrame({'label':a,'value':a}).to_dict('records')
+        value_indicators = a[0]
+        return df_sheets_dict, value_sheets, df_indicators_dict, value_indicators
+    if 'dropdown_sheet_x' in changed_id:
+        # Obtain dic with the indicators of the current selected sheet
+        df_aux = pd.read_excel(dd1, sheet_name=dd2, engine='openpyxl')
+        a=list(df_aux.columns)[2:]
+        df_indicators_dict =pd.DataFrame({'label':a,'value':a}).to_dict('records')
+        value_indicators = a[0]
+        return dd3, dd2, df_indicators_dict, value_indicators
+    
+    return df_default_sheets_dict,"ODS",df_default_indicators_dict,'2020 Global Index Score (0-100)'
 
 # Plot 2D: y axis
 # When you choose a different file or sheet you want to see the corresponding new sheets and indicators
@@ -676,21 +744,32 @@ def update_dd1(dd1,dd2):
     Output(component_id='dropdown_indicator_y', component_property='options'),
     Output(component_id='dropdown_indicator_y', component_property='value')],
     [Input(component_id='dropdown_file_y', component_property='value'),
-    Input(component_id='dropdown_sheet_y', component_property='value')]
+    Input(component_id='dropdown_sheet_y', component_property='value'),
+    State(component_id='dropdown_sheet_y', component_property='options')]
 )
-def update_dd1(dd1,dd2):
+def update_dd1(dd1,dd2,dd3):
     # Obtain dic with sheets from current selected file and a random value to
-    wb=openpyxl.load_workbook(dd1)
-    a=wb.sheetnames
-    df_sheets_dict = pd.DataFrame({'label':a,'value':a}).to_dict('records')
-    value_sheets = random.choice(a)
+    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+    if 'dropdown_file_y' in changed_id:
+        wb=openpyxl.load_workbook(dd1)
+        a=wb.sheetnames
+        df_sheets_dict = pd.DataFrame({'label':a,'value':a}).to_dict('records')
+        value_sheets = a[0]
 
-    # Obtain dic with the indicators of the current selected sheet
-    df_aux = pd.read_excel(dd1, sheet_name=dd2, engine='openpyxl')
-    a=list(df_aux.columns)[2:]
-    df_indicators_dict =pd.DataFrame({'label':a,'value':a}).to_dict('records')
-    value_indicators = random.choice(a)
-    return df_sheets_dict, value_sheets, df_indicators_dict, value_indicators
+        df_aux = pd.read_excel(dd1, sheet_name=value_sheets, engine='openpyxl')
+        a=list(df_aux.columns)[2:]
+        df_indicators_dict =pd.DataFrame({'label':a,'value':a}).to_dict('records')
+        value_indicators = a[0]
+        return df_sheets_dict, value_sheets, df_indicators_dict, value_indicators
+    if 'dropdown_sheet_y' in changed_id:
+        # Obtain dic with the indicators of the current selected sheet
+        df_aux = pd.read_excel(dd1, sheet_name=dd2, engine='openpyxl')
+        a=list(df_aux.columns)[2:]
+        df_indicators_dict =pd.DataFrame({'label':a,'value':a}).to_dict('records')
+        value_indicators = a[0]
+        return dd3, dd2, df_indicators_dict, value_indicators
+    
+    return df_default_sheets_dict,"ODS",df_default_indicators_dict,'2020 Global Index Score (0-100)'
 
 # Sunburst
 # When you choose a different file or sheet you want to see the corresponding new sheets and indicators
@@ -700,21 +779,32 @@ def update_dd1(dd1,dd2):
     Output(component_id='dropdown_indicator_sunburst', component_property='options'),
     Output(component_id='dropdown_indicator_sunburst', component_property='value')],
     [Input(component_id='dropdown_file_sunburst', component_property='value'),
-    Input(component_id='dropdown_sheet_sunburst', component_property='value')]
+    Input(component_id='dropdown_sheet_sunburst', component_property='value'),
+    State(component_id='dropdown_sheet_sunburst', component_property='options')]
 )
-def update_dd1(dd1,dd2):
+def update_dd1(dd1,dd2,dd3):
     # Obtain dic with sheets from current selected file and a random value to
-    wb=openpyxl.load_workbook(dd1)
-    a=wb.sheetnames
-    df_sheets_dict = pd.DataFrame({'label':a,'value':a}).to_dict('records')
-    value_sheets = random.choice(a)
+    changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
+    if 'dropdown_file_sunburst' in changed_id:
+        wb=openpyxl.load_workbook(dd1)
+        a=wb.sheetnames
+        df_sheets_dict = pd.DataFrame({'label':a,'value':a}).to_dict('records')
+        value_sheets = a[0]
 
-    # Obtain dic with the indicators of the current selected sheet
-    df_aux = pd.read_excel(dd1, sheet_name=dd2, engine='openpyxl')
-    a=list(df_aux.columns)[2:]
-    df_indicators_dict =pd.DataFrame({'label':a,'value':a}).to_dict('records')
-    value_indicators = random.choice(a)
-    return df_sheets_dict, value_sheets, df_indicators_dict, value_indicators
+        df_aux = pd.read_excel(dd1, sheet_name=value_sheets, engine='openpyxl')
+        a=list(df_aux.columns)[2:]
+        df_indicators_dict =pd.DataFrame({'label':a,'value':a}).to_dict('records')
+        value_indicators = a[0]
+        return df_sheets_dict, value_sheets, df_indicators_dict, value_indicators
+    if 'dropdown_sheet_sunburst' in changed_id:
+        # Obtain dic with the indicators of the current selected sheet
+        df_aux = pd.read_excel(dd1, sheet_name=dd2, engine='openpyxl')
+        a=list(df_aux.columns)[2:]
+        df_indicators_dict =pd.DataFrame({'label':a,'value':a}).to_dict('records')
+        value_indicators = a[0]
+        return dd3, dd2, df_indicators_dict, value_indicators
+    
+    return df_default_sheets_dict,"ODS",df_default_indicators_dict,'2020 Global Index Score (0-100)'
 
 # # Add a variable to the cluster list
 
@@ -742,6 +832,12 @@ def update_list_cluster(bt1,bt2,file_chosen,sheet_chosen,indicator_chosen, listC
         if not listChildren:
             #df_for_list_cluster_variable = pd.DataFrame()
             listChildren = []
+            #df_aux = pd.read_excel(file2, sheet_name="Cluster_var", engine='openpyxl')
+            #counter = 0
+            #if df_aux.size==0:
+            #    while(len(df_aux.iat[2,counter])>1):
+            #        listChildren.append(dbc.ListGroupItem(df_aux.iat[2,counter]))
+            #        counter = counter + 1
         if button_id == 'clear_variable_list':
             n=0
             deleteSheet(file2,'Cluster_var')
@@ -873,8 +969,11 @@ def show_list_of_clusters(cluster_button,list_variables_cluster,number_clusters)
             #df_total['Cluster '+str(n)]=new_column
             #df_total = df_total.rename(index={0: 'Cluster'+str(n)})
             n=n+1
+        deleteColums(file2,"Cluster_table",0,10)
+        write_excel2(df_total,file2,'Cluster_table',0,0)
         return [dbc.Table.from_dataframe(df_total, striped=True,bordered = True, hover=True)]
-    return [dbc.Table.from_dataframe(pd.DataFrame(), striped=True,bordered = True, hover=True)]
+    df_aux = pd.read_excel(file2, sheet_name='Cluster_table', engine='openpyxl')
+    return [dbc.Table.from_dataframe(df_aux, striped=True,bordered = True, hover=True)]
 
 # Callback for the Buttons inside Plot tab
 @app.callback(
@@ -897,10 +996,13 @@ def show_list_of_clusters(cluster_button,list_variables_cluster,number_clusters)
     State(component_id='dropdown_indicator_y', component_property='value'),
     State(component_id='method_vertex', component_property='value'),
     State(component_id='dropdown_neighbors_vertex', component_property='value'),
+    State(component_id='ckl_types_correlations', component_property='value'),
+    State(component_id='white_background', component_property='value'),
+    State(component_id='white_background2', component_property='value')
     ]
     )
 
-def update_graph(bt1,bt2,bt3,bt4,bt5,bt6,bt7,dd1_sun,dd2_sun,dd3_sun,dd1_2d,dd2_2d,dd3_2d,dd4_2d,dd5_2d,dd6_2d,method_vertex,neigh_vertex):
+def update_graph(bt1,bt2,bt3,bt4,bt5,bt6,bt7,dd1_sun,dd2_sun,dd3_sun,dd1_2d,dd2_2d,dd3_2d,dd4_2d,dd5_2d,dd6_2d,method_vertex,neigh_vertex,types_correlations,white_back,white_back2):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     if 'submit_parallel' in changed_id:
         df1 = pd.read_excel(file2, sheet_name='Hoja1', engine='openpyxl')
@@ -924,7 +1026,7 @@ def update_graph(bt1,bt2,bt3,bt4,bt5,bt6,bt7,dd1_sun,dd2_sun,dd3_sun,dd1_2d,dd2_
             children=[
                 dcc.Graph(
                     id= 'radar',
-                    figure=draw_radar(df1,df2)
+                    figure=draw_radar(df1,df2, white_back2)
                     )
                 ]
                 )]
@@ -994,7 +1096,7 @@ def update_graph(bt1,bt2,bt3,bt4,bt5,bt6,bt7,dd1_sun,dd2_sun,dd3_sun,dd1_2d,dd2_
             children=[
                 dcc.Graph(
                     id= 'radar',
-                    figure=plot_2d(dd1_2d,dd2_2d,dd3_2d,dd4_2d,dd5_2d,dd6_2d)
+                    figure=plot_2d(dd1_2d,dd2_2d,dd3_2d,dd4_2d,dd5_2d,dd6_2d,types_correlations, white_back)
                     )
                 ])]
         return new_child

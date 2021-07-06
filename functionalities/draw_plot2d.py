@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
-def plot_2d(dd1,dd2,dd3,dd4,dd5,dd6):
+def plot_2d(dd1,dd2,dd3,dd4,dd5,dd6,types_correlations, white_back):
     file2='static/filtros.xlsx'
     # Dataframe with name and values of indicators
     df = pd.DataFrame()
@@ -55,34 +55,51 @@ def plot_2d(dd1,dd2,dd3,dd4,dd5,dd6):
     #df = px.df.tips()
 
     dict_hover = {"(x) "+dd3: True,"(y) "+dd6: True, "country": True, "label":False}
-    fig = px.scatter(df, x="(x) "+dd3, y="(y) "+dd6, color=df2["Cluster"], text= "label", hover_name = "country", hover_data=dict_hover, trendline="ols")
-    r_squared = px.get_trendline_results(fig).px_fit_results.iloc[0].rsquared
-    slope = px.get_trendline_results(fig).iloc[0]["px_fit_results"].params
-    slope = slope.tolist()
+
+    if ('linear' in types_correlations) or ('all' in types_correlations):
+      fig = px.scatter(df, x="(x) "+dd3, y="(y) "+dd6, color=df2["Cluster"], text= "label", hover_name = "country", hover_data=dict_hover, trendline="ols")
+      r_squared = px.get_trendline_results(fig).px_fit_results.iloc[0].rsquared
+      slope = px.get_trendline_results(fig).iloc[0]["px_fit_results"].params
+      slope = slope.tolist()
+      fig.data[0].showlegend = False
+      fig.data[1].name = fig.data[1].name  + "Linear  R^2 = "+ str(round(r_squared,3)) + " Slope = "+ str(round(slope[1],3))
+      fig.data[1].showlegend = True
+    else:
+      fig = px.scatter(df, x="(x) "+dd3, y="(y) "+dd6, color=df2["Cluster"], text= "label", hover_name = "country", hover_data=dict_hover)
+      fig.data[0].showlegend = False
     # fig.update_layout(
     #     title_text= "R^2 = "+ str(r_squared)
     # )
     
     #fig.data[0].name = 'observations'
 
-    fig = exponential_fit(fig, df["(x) "+dd3], df["(y) "+dd6])
+    fig = exponential_fit(fig, df["(x) "+dd3], df["(y) "+dd6],types_correlations)
 
-    fig.data[0].showlegend = False
-    fig.data[1].name = fig.data[1].name  + "Linear  R^2 = "+ str(round(r_squared,3)) + " Slope = "+ str(round(slope[1],3))
-    fig.data[1].showlegend = True
     fig.update(layout_coloraxis_showscale=False)
 
 
-        
-    fig.update_layout(
-      autosize=False,
-      width=1000,
-      height=600,
-      paper_bgcolor='rgba(99,143,156,0)',
-      plot_bgcolor='rgba(99,143,156,0.5)',
-      font_color="#70BFFA",
-      font_size = 15
-    )
+    if white_back:  
+      fig.update_layout(
+        autosize=False,
+        width=1000,
+        height=600,
+        paper_bgcolor='rgba(255,255,255,0)',
+        plot_bgcolor='rgba(255,255,255,1)',
+        font_color="#000000",
+        font_size = 15
+      )
+      fig.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='black')
+      fig.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='black')
+    else:
+      fig.update_layout(
+        autosize=False,
+        width=1000,
+        height=600,
+        paper_bgcolor='rgba(99,143,156,0)',
+        plot_bgcolor='rgba(99,143,156,0.5)',
+        font_color="#70BFFA",
+        font_size = 15
+      )
     
     return fig
     #fig.write_html('static/2DPlot.html', auto_open=True)

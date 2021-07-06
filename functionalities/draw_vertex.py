@@ -95,7 +95,6 @@ def draw_vertex(df9,df,df11):
                                             line=dict(color='rgb(50,50,50)', width=0.5)
                                             ),
                    text=labels,
-                   visible=True,
                    hoverinfo='text',
                    hovertext=labels
                    )

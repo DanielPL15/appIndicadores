@@ -9,12 +9,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import curve_fit
 
-def exponential_fit(fig,x,y):
+def exponential_fit(fig,x,y,types_correlations):
     #x=x.to_numpy
     #y=y.to_numpy
     x1=x
     y1=y
-    n=2
+    if ('linear' in types_correlations) or ('all' in types_correlations):
+        n=2
+    else:
+        n=1
     def exponential_func(x, a, b):
         #return a*np.exp(b*x)
         return np.multiply(a,np.exp(np.multiply(b,x)))
@@ -61,182 +64,184 @@ def exponential_fit(fig,x,y):
     
     # def poly3_func(x, a, b, c, d):
     #     return a + np.multiply(b,x) + np.multiply(c,np.power(x,2)) + np.multiply(d,np.power(x,3))     
+    if ('exponential' in types_correlations) or ('all' in types_correlations):
+        try:
+            x=x1
+            y=y1
+            popt, pcov = curve_fit(exponential_func, x, y, maxfev =10000)
+            xx= np.linspace(min(x), max(x),1000)
+            yy = exponential_func(xx, *popt)
+            residuals = y-exponential_func(x,*popt)
+            ss_res =np.sum(residuals**2)
+            ss_tot = np.sum((y-np.mean(y))**2)
+            r_squared = 1 - (ss_res/ss_tot)
 
-    try:
-        x=x1
-        y=y1
-        popt, pcov = curve_fit(exponential_func, x, y, maxfev =10000)
-        xx= np.linspace(min(x), max(x),1000)
-        yy = exponential_func(xx, *popt)
-        residuals = y-exponential_func(x,*popt)
-        ss_res =np.sum(residuals**2)
-        ss_tot = np.sum((y-np.mean(y))**2)
-        r_squared = 1 - (ss_res/ss_tot)
+            if((r_squared>float(0)) & (r_squared<float(1))):
+                # Creating the dataset, and generating the plot
+                trace2 = go.Scatter(
+                                x=xx,
+                                y=yy,
+                                mode='lines',
+                                marker=go.Marker(color='rgb(255, 0, 0)'),
+                                name='Exponential'
+                                )
 
-        if((r_squared>float(0)) & (r_squared<float(1))):
-            # Creating the dataset, and generating the plot
-            trace2 = go.Scatter(
-                            x=xx,
-                            y=yy,
-                            mode='lines',
-                            marker=go.Marker(color='rgb(255, 0, 0)'),
-                            name='Exponential'
-                            )
+                fig.add_traces(trace2)
 
-            fig.add_traces(trace2)
+                fig.data[n].name = fig.data[n].name  + "  R^2 = "+ str(round(r_squared,3))
+                fig.data[n].showlegend = True
+                n=n+1
+        except Exception as e:
+            print(e)
+    if ('exponential' in types_correlations) or ('all' in types_correlations):
+        try:
+            x=x1
+            y=y1
+            popt, pcov = curve_fit(exponential_func2, x, y,  maxfev =5000)
+            xx= np.linspace(min(x), max(x),1000)
+            yy = exponential_func2(xx, *popt)
+            residuals = y-exponential_func2(x,*popt)
+            ss_res =np.sum(residuals**2)
+            ss_tot = np.sum((y-np.mean(y))**2)
+            r_squared = 1 - (ss_res/ss_tot)
+            if((r_squared>float(0)) & (r_squared<float(1))):
+                # Creating the dataset, and generating the plot
+                trace2 = go.Scatter(
+                                x=xx,
+                                y=yy,
+                                mode='lines',
+                                marker=go.Marker(color='rgb(255, 0, 239)'),
+                                name='Exponential'
+                                )
 
-            fig.data[n].name = fig.data[n].name  + "  R^2 = "+ str(round(r_squared,3))
-            fig.data[n].showlegend = True
-            n=n+1
-    except Exception as e:
-        print(e)
+                fig.add_traces(trace2)
 
-    try:
-        x=x1
-        y=y1
-        popt, pcov = curve_fit(exponential_func2, x, y,  maxfev =5000)
-        xx= np.linspace(min(x), max(x),1000)
-        yy = exponential_func2(xx, *popt)
-        residuals = y-exponential_func2(x,*popt)
-        ss_res =np.sum(residuals**2)
-        ss_tot = np.sum((y-np.mean(y))**2)
-        r_squared = 1 - (ss_res/ss_tot)
-        if((r_squared>float(0)) & (r_squared<float(1))):
-            # Creating the dataset, and generating the plot
-            trace2 = go.Scatter(
-                            x=xx,
-                            y=yy,
-                            mode='lines',
-                            marker=go.Marker(color='rgb(255, 0, 239)'),
-                            name='Exponential'
-                            )
+                fig.data[n].name = fig.data[n].name  + "  R^2 = "+ str(round(r_squared,3))
+                fig.data[n].showlegend = True
+                n=n+1
+        except Exception as e:
+            print(e)
 
-            fig.add_traces(trace2)
+    if ('poly2' in types_correlations) or ('all' in types_correlations):
+        try:
+            x=x1
+            y=y1
+            popt, pcov = curve_fit(poly2_func, x, y,  maxfev =5000)
+            xx= np.linspace(min(x), max(x),1000)
+            yy = poly2_func(xx, *popt)
+            residuals = y-poly2_func(x,*popt)
+            ss_res =np.sum(residuals**2)
+            ss_tot = np.sum((y-np.mean(y))**2)
+            r_squared = 1 - (ss_res/ss_tot)
 
-            fig.data[n].name = fig.data[n].name  + "  R^2 = "+ str(round(r_squared,3))
-            fig.data[n].showlegend = True
-            n=n+1
-    except Exception as e:
-        print(e)
-
-
-    try:
-        x=x1
-        y=y1
-        popt, pcov = curve_fit(poly2_func, x, y,  maxfev =5000)
-        xx= np.linspace(min(x), max(x),1000)
-        yy = poly2_func(xx, *popt)
-        residuals = y-poly2_func(x,*popt)
-        ss_res =np.sum(residuals**2)
-        ss_tot = np.sum((y-np.mean(y))**2)
-        r_squared = 1 - (ss_res/ss_tot)
-
-        if((r_squared>float(0)) & (r_squared<float(1))):
-            # Creating the dataset, and generating the plot
-            trace2 = go.Scatter(
-                            x=xx,
-                            y=yy,
-                            mode='lines',
-                            marker=go.Marker(color='rgb(0, 94, 255)'),
-                            name='Poly2'
-                            )
-
-
-            fig.add_traces(trace2)
-
-            fig.data[n].name = fig.data[n].name  + "  R^2 = "+ str(round(r_squared,3))
-            fig.data[n].showlegend = True
-            n=n+1
-    except Exception as e:
-        print(e)
-    try:
-        x=x1
-        y=y1
-        popt, pcov = curve_fit(poly3_func, x, y,  maxfev =5000)
-        xx= np.linspace(min(x), max(x),1000)
-        yy = poly3_func(xx, *popt)
-        residuals = y-poly3_func(x,*popt)
-        ss_res =np.sum(residuals**2)
-        ss_tot = np.sum((y-np.mean(y))**2)
-        r_squared = 1 - (ss_res/ss_tot)
-
-        if((r_squared>float(0)) & (r_squared<float(1))):
-            # Creating the dataset, and generating the plot
-            trace2 = go.Scatter(
-                            x=xx,
-                            y=yy,
-                            mode='lines',
-                            marker=go.Marker(color='rgb(0, 255, 51)'),
-                            name='Poly3'
-                            )
+            if((r_squared>float(0)) & (r_squared<float(1))):
+                # Creating the dataset, and generating the plot
+                trace2 = go.Scatter(
+                                x=xx,
+                                y=yy,
+                                mode='lines',
+                                marker=go.Marker(color='rgb(0, 94, 255)'),
+                                name='Poly2'
+                                )
 
 
-            fig.add_traces(trace2)
+                fig.add_traces(trace2)
 
-            fig.data[n].name = fig.data[n].name  + "  R^2 = "+ str(round(r_squared,3))
-            fig.data[n].showlegend = True
-            n=n+1
-    except Exception as e:
-        print(e)
+                fig.data[n].name = fig.data[n].name  + "  R^2 = "+ str(round(r_squared,3))
+                fig.data[n].showlegend = True
+                n=n+1
+        except Exception as e:
+            print(e)
+    
+    if ('poly3' in types_correlations) or ('all' in types_correlations):
+        try:
+            x=x1
+            y=y1
+            popt, pcov = curve_fit(poly3_func, x, y,  maxfev =5000)
+            xx= np.linspace(min(x), max(x),1000)
+            yy = poly3_func(xx, *popt)
+            residuals = y-poly3_func(x,*popt)
+            ss_res =np.sum(residuals**2)
+            ss_tot = np.sum((y-np.mean(y))**2)
+            r_squared = 1 - (ss_res/ss_tot)
 
-    try:
-        x=x1
-        y=y1
-        popt, pcov = curve_fit(logarithmic_func, x, y,  maxfev =5000)
-        xx= np.linspace(min(x), max(x),1000)
-        yy = logarithmic_func(xx, *popt)
-        residuals = y-logarithmic_func(x,*popt)
-        ss_res =np.sum(residuals**2)
-        ss_tot = np.sum((y-np.mean(y))**2)
-        r_squared = 1 - (ss_res/ss_tot)
-
-        if((r_squared>float(0)) & (r_squared<float(1))):
-            # Creating the dataset, and generating the plot
-            trace2 = go.Scatter(
-                            x=xx,
-                            y=yy,
-                            mode='lines',
-                            marker=go.Marker(color='rgb(66, 142, 0)'),
-                            name='Logarithmic'
-                            )
-
-
-            fig.add_traces(trace2)
-
-            fig.data[n].name = fig.data[n].name  + "  R^2 = "+ str(round(r_squared,3))
-            fig.data[n].showlegend = True
-            n=n+1
-    except Exception as e:
-        print(e)
-
-    try:
-        x=x1
-        y=y1
-        popt, pcov = curve_fit(logistic_func, x, y,  maxfev =5000)
-        xx= np.linspace(min(x), max(x),1000)
-        yy = logistic_func(xx, *popt)
-        residuals = y-logistic_func(x,*popt)
-        ss_res =np.sum(residuals**2)
-        ss_tot = np.sum((y-np.mean(y))**2)
-        r_squared = 1 - (ss_res/ss_tot)
-
-        if((r_squared>float(0)) & (r_squared<float(1))):
-            # Creating the dataset, and generating the plot
-            trace2 = go.Scatter(
-                            x=xx,
-                            y=yy,
-                            mode='lines',
-                            marker=go.Marker(color='rgb(239, 255, 0)'),
-                            name='Logistic'
-                            )
+            if((r_squared>float(0)) & (r_squared<float(1))):
+                # Creating the dataset, and generating the plot
+                trace2 = go.Scatter(
+                                x=xx,
+                                y=yy,
+                                mode='lines',
+                                marker=go.Marker(color='rgb(0, 255, 51)'),
+                                name='Poly3'
+                                )
 
 
-            fig.add_traces(trace2)
+                fig.add_traces(trace2)
 
-            fig.data[n].name = fig.data[n].name  + "  R^2 = "+ str(round(r_squared,3))
-            fig.data[n].showlegend = True
-            n=n+1
-    except Exception as e:
-        print(e)
+                fig.data[n].name = fig.data[n].name  + "  R^2 = "+ str(round(r_squared,3))
+                fig.data[n].showlegend = True
+                n=n+1
+        except Exception as e:
+            print(e)
+    if ('logarithmic' in types_correlations) or ('all' in types_correlations):
+        try:
+            x=x1
+            y=y1
+            popt, pcov = curve_fit(logarithmic_func, x, y,  maxfev =5000)
+            xx= np.linspace(min(x), max(x),1000)
+            yy = logarithmic_func(xx, *popt)
+            residuals = y-logarithmic_func(x,*popt)
+            ss_res =np.sum(residuals**2)
+            ss_tot = np.sum((y-np.mean(y))**2)
+            r_squared = 1 - (ss_res/ss_tot)
+
+            if((r_squared>float(0)) & (r_squared<float(1))):
+                # Creating the dataset, and generating the plot
+                trace2 = go.Scatter(
+                                x=xx,
+                                y=yy,
+                                mode='lines',
+                                marker=go.Marker(color='rgb(66, 142, 0)'),
+                                name='Logarithmic'
+                                )
+
+
+                fig.add_traces(trace2)
+
+                fig.data[n].name = fig.data[n].name  + "  R^2 = "+ str(round(r_squared,3))
+                fig.data[n].showlegend = True
+                n=n+1
+        except Exception as e:
+            print(e)
+    if ('logistic' in types_correlations) or ('all' in types_correlations):
+        try:
+            x=x1
+            y=y1
+            popt, pcov = curve_fit(logistic_func, x, y,  maxfev =5000)
+            xx= np.linspace(min(x), max(x),1000)
+            yy = logistic_func(xx, *popt)
+            residuals = y-logistic_func(x,*popt)
+            ss_res =np.sum(residuals**2)
+            ss_tot = np.sum((y-np.mean(y))**2)
+            r_squared = 1 - (ss_res/ss_tot)
+
+            if((r_squared>float(0)) & (r_squared<float(1))):
+                # Creating the dataset, and generating the plot
+                trace2 = go.Scatter(
+                                x=xx,
+                                y=yy,
+                                mode='lines',
+                                marker=go.Marker(color='rgb(239, 255, 0)'),
+                                name='Logistic'
+                                )
+
+
+                fig.add_traces(trace2)
+
+                fig.data[n].name = fig.data[n].name  + "  R^2 = "+ str(round(r_squared,3))
+                fig.data[n].showlegend = True
+                n=n+1
+        except Exception as e:
+            print(e)
 
     return fig
